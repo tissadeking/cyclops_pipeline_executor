@@ -2,6 +2,7 @@ fields = {
             "intent_type": "analytical",
             "data": ["reference to dataframe 1", "dataframe 2", "...."],
             "task": "classification/regression, etc",
+            "execution_type": ["training", "inference"],
             "target": "target variable",
             "specific_columns": ["feature 1", "feature 2", "feature 3"],
             "preprocessing_choice": "reshuffle the dataset",
