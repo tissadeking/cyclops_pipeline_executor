@@ -5,3 +5,4 @@ def drop_empty_fun(df):
     for col in columns:
         df.dropna(subset=[col], inplace=True)
     return df
+

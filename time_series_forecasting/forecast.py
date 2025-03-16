@@ -8,21 +8,21 @@ def ar_fun(X):
     X = pd.Series(X)
     #fit model
     model = AR(X, lags=[1])
-    model.fit()
+    model = model.fit()
     return model
     #print(model_fit.summary())
 
 def arima_fun(X):
     X = pd.Series(X)
     #fit model
-    model = ARIMA(X.value, order=(5,1,0))
-    model.fit()
+    model = ARIMA(X, order=(5,1,0))
+    model = model.fit()
     return model
 
 #multivariate time series forecasting
 def var_fun(df):
     # Train VAR model
     model = VAR(df)
-    model.fit()
+    model = model.fit()
     return model
 

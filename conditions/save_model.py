@@ -3,9 +3,10 @@ from datetime import datetime
 
 def save_model_fun(model, model_name):
     # Get current time as string
-    time_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    #time_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     # save the model to disk
-    filename = model_name + ' ' + time_str + ' .sav'
+    #filename = model_name + ' ' + time_str + ' .sav'
+    filename = model_name + '.sav'
     pickle.dump(model, open(filename, 'wb'))
     # Serialise the file
     #with open(filename, 'wb') as handle:

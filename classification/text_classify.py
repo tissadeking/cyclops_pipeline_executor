@@ -9,7 +9,6 @@ from sklearn.linear_model import PassiveAggressiveClassifier
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 
-
 #PASSIVE AGGRESSIVE CLASSIFIER
 def pac_model_text(X_train, y_train):
     #Create a pipeline of Tfidf Vectorizer and Passive Aggressive Classifier

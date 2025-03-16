@@ -9,8 +9,11 @@ def isolation_fun(df):
     # Train Isolation Forest
     iso_forest = IsolationForest(contamination=0.05, random_state=42)
     df["Anomaly"] = iso_forest.fit_predict(df[numerical_cols])
-    print(df["Anomaly"])
-
+    #print(df["Anomaly"])
+    # Show anomalies
+    anomalies = df[df["Anomaly"] == -1]
+    print("Anomalies detected:")
+    print(anomalies)
     # Plot results
     '''plt.scatter(df["Feature1"], df["Feature2"], c=df["Anomaly"], cmap="coolwarm", edgecolors="k")
     plt.xlabel("Feature 1")
@@ -19,3 +22,4 @@ def isolation_fun(df):
     plt.show()'''
 
     return df["Anomaly"]
+

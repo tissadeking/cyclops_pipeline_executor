@@ -3,9 +3,11 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 
 def autoencode_fun(train_data, test_data):
+    n_cols = len(train_data.columns)
+    #print(n_cols)
     # Build Autoencoder model
     model = tf.keras.models.Sequential([
-        tf.keras.layers.Dense(16, activation='relu', input_shape=(1,)),
+        tf.keras.layers.Dense(16, activation='relu', input_shape=(n_cols,)),
         tf.keras.layers.Dense(8, activation='relu'),
         tf.keras.layers.Dense(16, activation='relu'),
         tf.keras.layers.Dense(1, activation='sigmoid')
@@ -25,6 +27,12 @@ def autoencode_fun(train_data, test_data):
     '''reconstructed = model.predict(train_data)
     mse = np.mean(np.abs(reconstructed - train_data), axis=1)
     threshold = np.percentile(mse, 95)  # Set anomaly threshold'''
+    # Identify anomalies
+    train_data["Anomaly"] = mse > threshold
+    # Show anomalies
+    anomalies = train_data[train_data["Anomaly"] == True]
+    print("Anomalies detected:")
+    print(anomalies)
 
     # Plot results
     plt.hist(mse, bins=50, color='blue')
@@ -34,3 +42,4 @@ def autoencode_fun(train_data, test_data):
     plt.ylabel("Frequency (Number of Samples)")
     plt.title("Reconstruction Error for Anomaly Detection")
     plt.show()
+

@@ -33,10 +33,11 @@ def dt_reg_model_fun(X_train, y_train):
     return model
 
 def nn_model_fun(X_train, y_train):
+    dim = len(X_train.columns)
     # create ANN model
     model = Sequential()
     # Defining the Input layer and FIRST hidden layer, both are same!
-    model.add(Dense(units=5, input_dim=6, kernel_initializer='normal', activation='relu'))
+    model.add(Dense(units=5, input_dim=dim, kernel_initializer='normal', activation='relu'))
     # Defining the Second layer of the model
     # after the first layer we don't have to specify input_dim as keras configure it automatically
     model.add(Dense(units=5, kernel_initializer='normal', activation='tanh'))

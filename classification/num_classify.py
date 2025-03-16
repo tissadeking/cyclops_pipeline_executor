@@ -46,3 +46,4 @@ def rf_model_fun(X_train, y_train):
     model = RandomForestClassifier()
     model.fit(X_train, y_train)
     return model
+

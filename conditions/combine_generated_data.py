@@ -1,5 +1,6 @@
 import numpy as np
 
+#combine np arrays
 def combine_gen_data_fun(X_arr):
     X_full = np.vstack(tuple(X_arr))
     #X_full = pd.concat(X_arr, ignore_index=True)

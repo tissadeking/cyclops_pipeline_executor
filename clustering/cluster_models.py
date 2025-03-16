@@ -7,6 +7,9 @@ from statistics import mean
 from sklearn.metrics import silhouette_score
 from sklearn.mixture import GaussianMixture
 from sklearn.cluster import KMeans
+import warnings
+
+warnings.filterwarnings("ignore")
 
 #X = [1, 4, 1, 0, 10, 2, 10, 4, 10, 0, 1.3, 4.1, 1.2, 0.5, 10.4, 2.2, 10.9, 4.5, 10.1, 0.3,
 #              1, 4, 1, 0, 10, 2, 10, 4, 10, 0, 1, 4, 1, 0, 10, 2, 10, 4, 10, 0, 20, 19, 15, 16, 34, 44, 33]
@@ -23,7 +26,7 @@ def affinity_fun(X):
 def dbscan_fun(X):
     #X = np.array([1, 4, 1, 0, 10, 2, 10, 4, 10, 0])
     X = np.array(X)
-    epsi = mean(X)/2 #500
+    epsi = np.mean(X)/2 #500
     # Create model
     dbscan = DBSCAN(eps=epsi, min_samples=2)
     dbscan.fit(X.reshape(-1, 1))
@@ -89,3 +92,5 @@ def optics_fun(X):
     # Training the model
     optics_model.fit(X)
     return optics_model
+
+

@@ -9,7 +9,11 @@ def one_class_svm_fun(df):
     # Train One-Class SVM
     oc_svm = OneClassSVM(nu=0.05, kernel="rbf", gamma=0.1)
     df["Anomaly"] = oc_svm.fit_predict(df[numerical_cols])
-    print(df["Anomaly"])
+    #print(df["Anomaly"])
+    # Show anomalies
+    anomalies = df[df["Anomaly"] == -1]
+    print("Anomalies detected:")
+    print(anomalies)
 
     '''# Plot results
     plt.scatter(df["Feature1"], df["Feature2"], c=df["Anomaly"], cmap="coolwarm", edgecolors="k")
@@ -19,3 +23,4 @@ def one_class_svm_fun(df):
     plt.show()'''
 
     return df["Anomaly"]
+

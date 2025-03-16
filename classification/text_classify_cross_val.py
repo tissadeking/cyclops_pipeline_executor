@@ -14,7 +14,9 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RepeatedStratifiedKFold
+import warnings
 
+warnings.filterwarnings("ignore")
 
 # PASSIVE AGGRESSIVE CLASSIFIER
 def pac_model_cross_val(X_train, X_test, y_train, y_test):

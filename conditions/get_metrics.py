@@ -22,13 +22,22 @@ def get_metrics_class_fun(X_test, y_test, model):
 def get_metrics_forecast_fun(X_test, y_test, model):
     #y_pred = model.predict(len(X_test)-len(X_test)/2, len(X_test))
     # Forecast the previous 10 data points
-    y_pred = model.predict(start=len(X_test) - 1, end=len(X_test) - len(X_test)/10, dynamic=False)    # evaluate forecasts
+    #y_pred = model.predict(start=len(X_test) - 1, end=len(X_test) - len(X_test)/10, dynamic=False)    # evaluate forecasts
+    #y_pred = model.predict(start=len(X_test) - len(X_test) / 10, end=len(X_test) - 1)
+    y_pred = model.predict(start=0, end=len(X_test) - 1)
+    #print(type(y_pred))
+    #print(type(y_test))
+    y_test = y_test.fillna(y_test.mean())
+    y_pred = y_pred.fillna(y_pred.mean())
     #rmse = sqrt(mean_squared_error(y_test, y_pred))
     mse = mean_squared_error(y_test, y_pred)
     return mse
     #print('Test RMSE: %.3f' % rmse)'''
 
-def get_metrics_var_forecast_fun(X_train, X_test, y_test, model):
+def get_metrics_var_forecast_fun(X_train, X_test, model):
+    #print(type(X_train))
+    #X_train = X_train.to_frame()
+    #X_test = X_test.to_frame()
     # Forecast the next steps (same length as test set)
     lag_order = model.k_ar  # Get lag order
     input_data = X_train.values[-lag_order:]  # Use latest lag_order rows for forecasting
