@@ -1,3 +1,4 @@
+import os, pandas as pd, time
 from conditions.save_model import save_model_fun
 from conditions.combine_dataframe import combine_df_fun
 from conditions.combine_generated_data import combine_gen_data_fun
@@ -11,6 +12,7 @@ from conditions.get_metrics import get_metrics_reg_fun, get_metrics_class_fun, g
 from conditions.combine_text_data import combine_text_data_fun
 from conditions.convert_np_array import convert_np_array_fun
 from conditions.extract_x_y import extract_x_y_fun, extract_x_y_text_fun
+from conditions.classify_text_or_num import classify_task
 from anomaly_detection.autoencoders import autoencode_fun
 from anomaly_detection.isolation_forest import isolation_fun
 from anomaly_detection.one_class_svm import one_class_svm_fun
@@ -21,34 +23,45 @@ from clustering.cluster_models import affinity_fun, dbscan_fun, gmm_fun,heirarch
 from regression.regressor import linear_model_fun, lasso_model_fun, ridge_model_fun, svr_model_fun, dt_reg_model_fun, nn_model_fun, rf_reg_model_fun
 from time_series_forecasting.forecast import ar_fun, arima_fun, var_fun
 from inference.inference import inference_fun, inference_forecast_ar, inference_forecast_arima, inference_var_forecast, inference_km, inference_dbscan
+from minio_crud import retrieve_object
 
 
 '''pipeline = {
             "intent_type": "analytical",
-            "data": ["dataframe 1", "dataframe 2", "...."],
-            "task": "regression, etc",
+            "data": ["Y8H!!!SU9A97DJJKSDFS_5GDHT67S8S", "dataframe 2", "...."],
+            "task": "text_classification",
             "task_description": {
-                "training": "yes/no",
+                "training": "yes",
                 "inference": {
-                    "infer": "yes/no",
-                    "model_name": "filename"
+                    "infer": "no",
+                    "model_name": "pac",
                 },
-                "save_model": "yes/no"
+                "save_model": "yes"
             },
-            "model": "",
-            "target": "target variable",
-            "specific_columns": ["feature 1", "feature 2", "feature 3"],
+            "model": "pac",
+            "target": "name",
+            #"specific_columns": ["feature 1", "feature 2", "feature 3"],
+            "specific_columns": [],
             "test_fraction": 0.2,
-            "pre-conditions": [],
+            "pre-conditions": ["combine_text_data", "extract_x_y_text",
+            "train_split"],
             "scaling_bounds": [-1, 1],
-            "post-conditions": [],
+            "post-conditions": ["save_model", "get_metrics_class"],
             "pipeline_id": "XYTHSI33"
         }'''
 
 def execute_fun(pipeline):
     global model, split_data, metric_val, y_pred, conv_extr, X
 
-    df = pipeline['data'][0]
+    # retrieve data from long-term storage
+    object_name = pipeline["data"][0]
+    download_path = object_name + '.csv'
+    retrieve_object(object_name, download_path)
+    df = pd.read_csv(download_path)
+    #df = pd.read_csv("policy_store.csv")
+    #df = pd.read_csv("combined_2.csv")
+
+    #df = pipeline['data'][0]
     target = pipeline['target']
     pre_conditions = pipeline['pre-conditions']
     post_conditions = pipeline['post-conditions']
@@ -60,17 +73,20 @@ def execute_fun(pipeline):
     #PRE-CONDITIONS
     if 'combine_text_data' in pre_conditions:
         X = combine_text_data_fun(df, target)
+        #print('X: ', X)
     if 'encode_target' in pre_conditions:
         df[target] = encode_target(df[target])
     if 'convert_np_array' in pre_conditions:
         conv_extr = convert_np_array_fun(df, target)
     elif 'extract_x_y_text' in pre_conditions:
         conv_extr = extract_x_y_text_fun(df, target, X)
+        #print('conv_extr: ', conv_extr)
     elif 'extract_x_y' in pre_conditions:
         conv_extr = extract_x_y_fun(df, target)
 
     if 'train_split' in pre_conditions:
         split_data = split_fun(conv_extr[0], conv_extr[1], pipeline['test_fraction'])
+        #print('split_data: ', split_data)
 
     if 'combine_dataframe' in pre_conditions:
         df = combine_df_fun(pipeline['data'])
@@ -96,7 +112,7 @@ def execute_fun(pipeline):
         df = scaling_fun_selected_cols(df, pipeline['scaling_bounds'],
                                        specific_columns)
 
-
+    time.sleep(1)
 
     #TASKS and MODELS
     #TRAINING
@@ -209,11 +225,12 @@ def execute_fun(pipeline):
             model = arima_fun(X)
         elif pipeline_model == 'var':
             model = var_fun(df)
+    time.sleep(1)
 
     #INFERENCE
     to_infer = pipeline['task_description']['inference']['infer']
     model_name = pipeline['task_description']['inference']['model_name']
-    if 'num_classification' in task or \
+    if 'num_classification' in task or 'regression' in task or \
         'text_classification_cross_val' in task or \
         'text_classification' in task:
         if 'yes' in to_infer:
@@ -236,6 +253,7 @@ def execute_fun(pipeline):
             elif pipeline_model == 'var':
                 y_pred = inference_var_forecast(split_data[1], model_name)
 
+    time.sleep(1)
 
     #POST-CONDITIONS
     if 'save_model' in post_conditions:
@@ -254,7 +272,9 @@ def execute_fun(pipeline):
         metric_val = get_metrics_var_forecast_fun(df, df,
                                          model)
 
-
+    # delete the retrieved data as it's not needed anymore
+    if (os.path.exists(download_path) and os.path.isfile(download_path)):
+        os.remove(download_path)
 
 
 

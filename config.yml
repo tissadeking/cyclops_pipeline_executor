@@ -1,0 +1,19 @@
+{
+  #host and port to deploy the container
+  'host': '0.0.0.0',
+  #'host': '172.21.0.1',
+  'port': '5003',
+
+  #MinIO credentials and endpoint for long-term storage
+  'minio_url': "http://my_minio:9100",  # API port
+  'minio_endpoint': "minio:9000", #to access the minio from another docker-compose app
+  'minio_endpoint_local': "127.0.0.1:9100", #to access the minio bucket from local program
+  'access_key': "minioadmin",
+  'secret_key': "minioadmin",
+  'bucket_name': "long-term",
+
+  #put as yes to create bucket inside long-term and test the executor alone
+  'test_status': "yes",
+
+}
+

@@ -1,5 +1,19 @@
 from flask import Flask, request, jsonify
 from execute import execute_fun
+from minio_crud import ensure_bucket
+import config, add_files
+
+parameters = config.parameters
+host = config.host
+port = config.port
+test_status = config.test_status
+print("Executor has started!", flush=True)
+
+if test_status == "yes":
+    #create long term storage bucket and add files into it for testing
+    ensure_bucket()
+    add_files.add_objects()
+
 
 app = Flask(__name__, static_folder="static")
 
@@ -46,5 +60,7 @@ def update_field():
     return jsonify({"message": "Pipeline sent", "data": field_data}), 200
 
 
+#if __name__ == "__main__":
+#    app.run(port=5002, debug=True)
 if __name__ == "__main__":
-    app.run(port=5002, debug=True)
+    app.run(host=host, port=port)

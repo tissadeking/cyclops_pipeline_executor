@@ -3,7 +3,9 @@ from sklearn.metrics.pairwise import euclidean_distances
 
 def inference_fun(X_test, filename):
     # load the model from disk
+    #print('filename: ', filename)
     loaded_model = pickle.load(open(filename, 'rb'))
+    #print('loaded model: ', loaded_model)
     #result = loaded_model.score(X_test, y_test)
     y_pred = loaded_model.predict(X_test)
     return y_pred

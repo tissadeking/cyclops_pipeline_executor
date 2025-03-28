@@ -1,0 +1,12 @@
+pandas
+flask
+scikit-learn
+numpy 
+scipy
+requests
+minio
+tensorflow
+matplotlib
+statsmodels
+pyyaml
+

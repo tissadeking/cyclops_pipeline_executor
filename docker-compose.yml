@@ -1,0 +1,27 @@
+#version: '3.8'
+
+services:
+  #for the ihu itself
+  executor:
+    build: .
+    container_name: executor
+    networks:
+      - docker_ihu_docker_ihu_default
+    ports:
+      - "5003:5003"
+    #depends_on:
+    #  - mysql
+    environment:
+      - MINIO_ENDPOINT=http://minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+    command: ["python3", "-u", "main.py"]
+
+#volumes:
+#  mysql-data:
+#  minio_data:
+  # driver: local
+
+networks:
+  docker_ihu_docker_ihu_default:
+    external: true
